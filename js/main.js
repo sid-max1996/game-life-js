@@ -7,9 +7,9 @@ const startGameBtn = document.getElementById('startGameBtn');
 const stopGameBtn = document.getElementById('stopGameBtn');
 const iterNumSpan = document.getElementById('iterNumSpan');
 
-let boardWidth = 1000;
-let boardHeight = 1000;
-let fieldSize = 3;
+let boardWidth = 300;
+let boardHeight = 300;
+let fieldSize = 5;
 
 // Sets default values in size inputs
 widthInput.value = boardWidth;
