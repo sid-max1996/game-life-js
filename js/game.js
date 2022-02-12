@@ -24,6 +24,10 @@ class Game {
     this.ctx.fillRect(x * this.fieldSize, y * this.fieldSize, this.fieldSize, this.fieldSize);
   }
 
+  _clearField(x, y) {
+    this.ctx.clearRect(x * this.fieldSize, y * this.fieldSize, this.fieldSize, this.fieldSize);
+  }
+
   _draw() {
     this._clear();
     for (let x = 0; x < this.board.width; x++) {
@@ -44,7 +48,7 @@ class Game {
     this.iterCount += 1;
     this.iterEl.innerHTML = this.iterCount;
     
-    // let t0 = performance.now();
+    // const t0 = performance.now();
     let changes = [];
     if (this.threads) {
       changes = await doMainIteration(this.board, this.threads);
@@ -58,9 +62,15 @@ class Game {
 
     this.board.applyChanges(changes);
 
-    // t0 = performance.now();
-    this._draw();
-    // console.log(`Draw board iteration ${this.iterCount} took ${performance.now() - t0} milliseconds.`);
+    // const t1 = performance.now();
+    for (const { x, y, value } of changes) {
+      if (value === 1) {
+        this._drawField(x, y);
+      } else if (value === 0) {
+        this._clearField(x, y);
+      }
+    }
+    // console.log(`Draw board iteration ${this.iterCount} took ${performance.now() - t1} milliseconds.`);
     
     if (!this.started) return;
     this.timer = setTimeout(this._doGameIteration.bind(this), 300);
