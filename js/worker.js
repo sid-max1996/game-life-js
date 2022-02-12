@@ -6,8 +6,8 @@ onmessage = async (e) => {
   const { operation } = e.data;
   switch(operation) {
     case 'setBoard':
-      const { arr, width, height } = e.data;
-      board = createBoard(arr, width, height);
+      const { arr, countY, width, height } = e.data;
+      board = createBoard(arr, countY, width, height);
       postMessage(null);
       break;
     case 'doSubIteration':
@@ -24,8 +24,8 @@ onmessage = async (e) => {
   }
 };
 
-function createBoard(arr, width, height) {
-  return new Board(arr, width, height);
+function createBoard(arr, countY, width, height) {
+  return new Board(arr, countY, width, height);
 }
 
 function doSubIteration(board) {

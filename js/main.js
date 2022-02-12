@@ -46,5 +46,5 @@ canvas.addEventListener('click', event => {
   const { offsetX, offsetY } = event;
   const x = Math.floor(offsetX / fieldSize);
   const y = Math.floor(offsetY / fieldSize);
-  window.game.firstSet(x, y, 1);
+  window.game.toogle(x, y);
 });

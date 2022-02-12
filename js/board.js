@@ -1,11 +1,12 @@
 class Board {
-  constructor(arr, width, height) {
+  constructor(arr, countY, width, height) {
     if (arr.length !== width * height) {
       throw new Error(`Board arr wrong length: width * height ${arr.length} !== ${width * height}`);
     }
     this.arr = arr;
     this.width = width;
     this.height = height;
+    this.countY = countY;
   }
 
   _checkCoords(x, y) {
@@ -22,7 +23,14 @@ class Board {
       throw new Error('value must be 1 or 0');
     }
     this._checkCoords();
-    this.arr[y * this.width + x] = value;
+    const index = y * this.width + x;
+    const prevValue = this.arr[index];
+    if (value === 1 && prevValue === 0) {
+      this.countY[y] += 1;
+    } else if (value === 0 && prevValue === 1) {
+      this.countY[y] -= 1;
+    }
+    this.arr[index] = value;
   }
 
   get(x, y) {
@@ -47,25 +55,29 @@ class Board {
     }
 
     let changes = [];
-    for (let x = 0; x < this.width; x++) {
-      for (let y = startY; y < endY; y++) {
+    for (let y = startY; y < endY; y++) {
+      const upY = decreaseCoord(y, maxY);
+      const downY = increaseCoord(y, maxY);
+      // Optimization skip lines where there is no life
+      if (this.countY[y] === 0 && this.countY[upY] === 0 && this.countY[downY] === 0) {
+        continue;
+      }
+      for (let x = 0; x < this.width; x++) {
         let neighborCount = 0;
-        const upX = decreaseCoord(x, maxX);
-        const downX = increaseCoord(x, maxX);
-        const leftY = decreaseCoord(y, maxY);
-        const rightY = increaseCoord(y, maxY);
-        if (this.get(upX, y) === 1) neighborCount++;
-        if (this.get(upX, rightY) === 1) neighborCount++;
-        if (this.get(upX, leftY) === 1) neighborCount++;
-        if (this.get(x, rightY) === 1) neighborCount++;
-        if (this.get(x, leftY) === 1) neighborCount++;
-        if (this.get(downX, y) === 1) neighborCount++;
-        if (this.get(downX, rightY) === 1) neighborCount++;
-        if (this.get(downX, leftY) === 1) neighborCount++;
+        const rightX = decreaseCoord(x, maxX);
+        const leftX = increaseCoord(x, maxX);
+        if (this.get(rightX, y) === 1) neighborCount++;
+        if (this.get(rightX, downY) === 1) neighborCount++;
+        if (this.get(rightX, upY) === 1) neighborCount++;
+        if (this.get(x, downY) === 1) neighborCount++;
+        if (this.get(x, upY) === 1) neighborCount++;
+        if (this.get(leftX, y) === 1) neighborCount++;
+        if (this.get(leftX, downY) === 1) neighborCount++;
+        if (this.get(leftX, upY) === 1) neighborCount++;
         const curValue = this.get(x, y);
-        if (![0, 1].includes(curValue)) {
-          throw new Error(`value must be 1 or 0 ${curValue} x ${x} y ${y} startY ${startY} endY ${endY}`);
-        }
+        // if (![0, 1].includes(curValue)) {
+        //   throw new Error(`value must be 1 or 0 ${curValue} x ${x} y ${y} startY ${startY} endY ${endY}`);
+        // }
         let newValue = curValue
         if (curValue === 1 && (neighborCount < 2 || neighborCount > 3)) {
           newValue = 0;

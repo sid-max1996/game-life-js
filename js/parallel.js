@@ -5,6 +5,7 @@ async function createThreads(workerScript, board, threadCount) {
     const startInd = tI * rowCount;
     const endInd = startInd + rowCount - 1;
     const sliceArr = board.arr.slice(startInd * board.width, (endInd + 1) * board.width);
+    const sliceCountY = board.countY.slice(startInd, endInd + 1);
     const thread = new Thread(workerScript, { startInd, endInd });
     if (sliceArr.length !== rowCount * board.width) {
       throw new Error('createThreads sliceArr len !== rowCount');
@@ -12,6 +13,7 @@ async function createThreads(workerScript, board, threadCount) {
     await thread.doOperation({
       operation: 'setBoard',
       arr: sliceArr,
+      countY: sliceCountY,
       width: board.width,
       height: rowCount
     });

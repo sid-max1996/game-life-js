@@ -6,7 +6,9 @@ class Game {
     this.iterEl = iterEl;
     this.ctx = this.canvas.getContext('2d');
     this.fieldSize = fieldSize;
-    this.board = new Board(new Array(width * height).fill(0), width, height);
+    const arr = new Array(width * height).fill(0);
+    const countY = new Array(height).fill(0);
+    this.board = new Board(arr, countY, width, height);
     this._setCanvasSize();
   }
 
@@ -39,23 +41,29 @@ class Game {
     }
   }
 
-  firstSet(x, y, value) {
-    this.board.set(x, y, value);
-    this._drawField(x, y);
+  toogle(x, y) {
+    const value = this.board.get(x, y);
+    const newValue = value === 1 ? 0 : 1
+    this.board.set(x, y, newValue);
+    if (newValue === 1) {
+      this._drawField(x, y);
+    } else {
+      this._clearField(x, y);
+    }
   }
 
   async _doGameIteration() {
     this.iterCount += 1;
     this.iterEl.innerHTML = this.iterCount;
     
-    // const t0 = performance.now();
+    const t0 = performance.now();
     let changes = [];
     if (this.threads) {
       changes = await doMainIteration(this.board, this.threads);
     } else {
       changes = this.board.doIteration(0, this.board.height)
     }
-    // console.log(`Field check iteration ${this.iterCount} took ${performance.now() - t0} milliseconds.`);
+    console.log(`Field check iteration ${this.iterCount} took ${performance.now() - t0} milliseconds.`);
 
     // console.log(`Changes len ${changes.length} iteration ${this.iterCount}`);
     if (!changes.length) return;
