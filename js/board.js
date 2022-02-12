@@ -66,7 +66,13 @@ class Board {
         if (![0, 1].includes(curValue)) {
           throw new Error(`value must be 1 or 0 ${curValue} x ${x} y ${y} startY ${startY} endY ${endY}`);
         }
-        const newValue = neighborCount >= 2 && neighborCount <= 3 ? 1 : 0;
+        let newValue = curValue
+        if (curValue === 1 && (neighborCount < 2 || neighborCount > 3)) {
+          newValue = 0;
+        }
+        if (curValue === 0 && neighborCount === 3) {
+          newValue = 1;
+        }
         if (curValue !== newValue) {
           changes.push({x, y, value: newValue});
         }

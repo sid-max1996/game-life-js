@@ -44,7 +44,7 @@ class Game {
     this.iterCount += 1;
     this.iterEl.innerHTML = this.iterCount;
     
-    let t0 = performance.now();
+    // let t0 = performance.now();
     let changes = [];
     if (this.threads) {
       changes = await doMainIteration(this.board, this.threads);
@@ -58,7 +58,7 @@ class Game {
 
     this.board.applyChanges(changes);
 
-    t0 = performance.now();
+    // t0 = performance.now();
     this._draw();
     // console.log(`Draw board iteration ${this.iterCount} took ${performance.now() - t0} milliseconds.`);
     
