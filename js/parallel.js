@@ -1,21 +1,22 @@
 async function createThreads(workerScript, board, threadCount) {
   const threads = [];
   const rowCount = Math.trunc(board.height / threadCount);
+  const indexes = [...board.map.keys()];
   for (let tI = 0; tI < threadCount; tI++) {
     const startInd = tI * rowCount;
     const endInd = startInd + rowCount - 1;
-    const sliceArr = board.arr.slice(startInd * board.width, (endInd + 1) * board.width);
     const sliceCountY = board.countY.slice(startInd, endInd + 1);
+    const minIndex = board.index(0, startInd);
+    const maxIndex = board.index(board.width - 1, endInd);
+    let filterIndexes = indexes.filter(index => index >= minIndex && index <= maxIndex);
+    filterIndexes = filterIndexes.map(index => index % board.index(board.width - 1, rowCount - 1));
     const thread = new Thread(workerScript, { startInd, endInd });
-    if (sliceArr.length !== rowCount * board.width) {
-      throw new Error('createThreads sliceArr len !== rowCount');
-    }
     await thread.doOperation({
       operation: 'setBoard',
-      arr: sliceArr,
       countY: sliceCountY,
       width: board.width,
-      height: rowCount
+      height: rowCount,
+      indexes: filterIndexes
     });
     threads.push(thread);
   }

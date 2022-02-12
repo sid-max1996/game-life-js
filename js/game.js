@@ -6,9 +6,8 @@ class Game {
     this.iterEl = iterEl;
     this.ctx = this.canvas.getContext('2d');
     this.fieldSize = fieldSize;
-    const arr = new Array(width * height).fill(0);
     const countY = new Array(height).fill(0);
-    this.board = new Board(arr, countY, width, height);
+    this.board = new Board(countY, width, height);
     this._setCanvasSize();
   }
 

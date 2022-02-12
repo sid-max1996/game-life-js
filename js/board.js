@@ -1,9 +1,9 @@
 class Board {
-  constructor(arr, countY, width, height) {
-    if (arr.length !== width * height) {
-      throw new Error(`Board arr wrong length: width * height ${arr.length} !== ${width * height}`);
+  constructor(countY, width, height, indexes = []) {
+    this.map = new Map();
+    for (const index of indexes) {
+      this.map.set(index, true);
     }
-    this.arr = arr;
     this.width = width;
     this.height = height;
     this.countY = countY;
@@ -18,24 +18,30 @@ class Board {
     }
   }
 
+  index(x, y) {
+    return y * this.width + x;
+  }
+
   set(x, y, value) {
     if (![0, 1].includes(value)) {
       throw new Error('value must be 1 or 0');
     }
     this._checkCoords();
-    const index = y * this.width + x;
-    const prevValue = this.arr[index];
+    const index = this.index(x, y);
+    const prevValue = this.map.has(index) ? 1 : 0;
     if (value === 1 && prevValue === 0) {
       this.countY[y] += 1;
+      this.map.set(index, true);
     } else if (value === 0 && prevValue === 1) {
       this.countY[y] -= 1;
+      this.map.delete(index);
     }
-    this.arr[index] = value;
   }
 
   get(x, y) {
     this._checkCoords();
-    return this.arr[y * this.width + x];
+    const index = this.index(x, y);
+    return this.map.has(index) ? 1 : 0;
   }
 
   doIteration(startY, endY) {
