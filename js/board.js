@@ -9,6 +9,10 @@ class Board {
     this.countY = countY;
   }
 
+  clear() {
+    this.map = new Map();
+  }
+
   _checkCoords(x, y) {
     if (x < 0 || x >= this.width) {
       throw new Error(`x > width x: ${x} width: ${this.width}`);

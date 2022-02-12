@@ -97,6 +97,7 @@ class Game {
     if (!this.started) return;
     this.started = false;
     this.iterCount = 0;
+    this.board.clear();
     if (this.timer) {
       clearTimeout(this.timer);
     }
