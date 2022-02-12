@@ -7,8 +7,8 @@ const startGameBtn = document.getElementById('startGameBtn');
 const stopGameBtn = document.getElementById('stopGameBtn');
 const iterNumSpan = document.getElementById('iterNumSpan');
 
-let boardWidth = 3000;
-let boardHeight = 3000;
+let boardWidth = 300;
+let boardHeight = 300;
 let fieldSize = 5;
 
 // Sets default values in size inputs
@@ -21,9 +21,9 @@ window.game = new Game(canvas, iterNumSpan, boardWidth, boardHeight, fieldSize);
 // Resize board btn handler 
 resizeBoardBtn.addEventListener('click', () => {
   if (window.game.started) return;
-  boardWidth = widthInput.value;
-  boardHeight = heightInput.value;
-  fieldSize = fieldSizeInput.value;
+  boardWidth = Number(widthInput.value);
+  boardHeight = Number(heightInput.value);
+  fieldSize = Number(fieldSizeInput.value);
   window.game = new Game(canvas, iterNumSpan, boardWidth, boardHeight, fieldSize);
 });
 
