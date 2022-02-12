@@ -10,7 +10,10 @@ class Board {
   }
 
   clear() {
-    this.map = new Map();
+    this.map.clear();
+    for (let i = 0; i < this.countY.length; i++) {
+      this.countY[i] = 0;
+    }
   }
 
   _checkCoords(x, y) {
