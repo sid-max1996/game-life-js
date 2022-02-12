@@ -5,18 +5,19 @@ async function createThreads(workerScript, board, threadCount) {
   for (let tI = 0; tI < threadCount; tI++) {
     const startInd = tI * rowCount;
     const endInd = startInd + rowCount - 1;
-    const sliceCountY = board.countY.slice(startInd, endInd + 1);
+    const threadCountY = board.countY.slice(startInd, endInd + 1);
     const minIndex = board.index(0, startInd);
     const maxIndex = board.index(board.width - 1, endInd);
-    let filterIndexes = indexes.filter(index => index >= minIndex && index <= maxIndex);
-    filterIndexes = filterIndexes.map(index => index % board.index(board.width - 1, rowCount - 1));
+    const maxCount = board.width * rowCount;
+    const threadIndexes = indexes.filter(index => index >= minIndex && index <= maxIndex)
+                                 .map(index => index % maxCount);
     const thread = new Thread(workerScript, { startInd, endInd });
     await thread.doOperation({
       operation: 'setBoard',
-      countY: sliceCountY,
+      countY: threadCountY,
       width: board.width,
       height: rowCount,
-      indexes: filterIndexes
+      indexes: threadIndexes
     });
     threads.push(thread);
   }
