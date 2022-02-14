@@ -55,14 +55,14 @@ class Game {
     this.iterCount += 1;
     this.iterEl.innerHTML = this.iterCount;
     
-    const t0 = performance.now();
+    // const t0 = performance.now();
     let changes = [];
     if (this.threads) {
       changes = await doMainIteration(this.board, this.threads);
     } else {
       changes = this.board.doIteration(0, this.board.height)
     }
-    console.log(`Field check iteration ${this.iterCount} took ${performance.now() - t0} milliseconds.`);
+    // console.log(`Field check iteration ${this.iterCount} took ${performance.now() - t0} milliseconds.`);
 
     // console.log(`Changes len ${changes.length} iteration ${this.iterCount}`);
     if (!changes.length) return;
